@@ -76,17 +76,19 @@ const styles = StyleSheet.create({
     fontSize: 13.6,
     color: color.labelColor,
     fontFamily: "Montserrat-Regular",
-    fontWeight: "700"
+    fontWeight: "700",
+    marginVertical:4
   },
   itemShortText: {
     fontSize: 11.2,
     color: color.placeholderColor,
     fontFamily: "Montserrat-Regular",
-    fontWeight: "500"
+    fontWeight: "500",
   },
   image: {
     width: "100%",
-    height: 100
+    height: 100,
+    borderRadius:4
   },
   searchBar: {
     marginVertical: 8,
