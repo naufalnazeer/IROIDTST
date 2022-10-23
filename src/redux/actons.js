@@ -10,9 +10,9 @@ export const fetchUserAction = () => (dispatch) => {
       .then((response) => {
         dispatch({
           type: UserConstants.FETCH_USER_SUCCESS,
-          payload: response.data,
+          payload: response,
         });
-        resolve(response);
+        resolve(response.data);
       })
       .catch((err) => {
         dispatch({

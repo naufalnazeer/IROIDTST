@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import auth from '@react-native-firebase/auth';
 
-export default function Authentication(props) {
+export default function Profile(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,7 +25,7 @@ export default function Authentication(props) {
         secureTextEntry={true}
       />
       <View style={styles.buttons}>
-        <Button title="signin" onPress={() => props.signin(email, password)} />
+        <Button title="signout" onPress={() => auth().signOut()} />
         <Button title="Create" onPress={() => props.createUser(email, password)} />
       </View>
     </View>

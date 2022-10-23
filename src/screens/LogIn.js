@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-// import Authentication from '../screens/Authenticated';
-// import Authenticated from './src/screens/Authenticated';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { StyleSheet, View, Text, Dimensions, TextInput, Pressable } from 'react-native';
@@ -10,13 +8,14 @@ import Animated, { useSharedValue, useAnimatedStyle, interpolate, withTiming, wi
 const { height, width } = Dimensions.get('window')
 
 export default function LogIn() {
-  
+
   const [isRegistering, setIsRegistering] = useState(false)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('')
+  const [phone, setPhone] = useState('')
   const imagePosition = useSharedValue(1)
-  
+
   const imageAnimatedStyle = useAnimatedStyle(() => {
     const interpolation = interpolate(imagePosition.value, [0, 1], [-height / 1.5, 0])
     return {
@@ -55,29 +54,30 @@ export default function LogIn() {
     imagePosition.value = 0;
     if (!isRegistering) runOnJS(setIsRegistering)(true)
   }
-  const registerOrLogin = async()=>{
+  const registerOrLogin = async () => {
     console.log("hi")
-    if (isRegistering){
-        try {
-            const credential = await auth().createUserWithEmailAndPassword(email, password);
-            console.log(credential);
-            const uid = credential.user.uid;
-            console.log("uid", uid);
-            const user = {
-              fullName: fullName,
-              user_id: uid,
-              email:email
-            };
-            await firestore().collection('users').doc(uid).set(user);
-          } catch (error) {
-            console.log(error);
-          }
-    }else{
-        try {
-            auth().signInWithEmailAndPassword(email, password);
-          } catch (error) {
-            alert(error);
-          }
+    if (isRegistering) {
+      try {
+        const credential = await auth().createUserWithEmailAndPassword(email, password);
+        console.log(credential);
+        const uid = credential.user.uid;
+        console.log("uid", uid);
+        const user = {
+          fullName: fullName,
+          user_id: uid,
+          email: email,
+          phoneNumber: phone
+        };
+        await firestore().collection('users').doc(uid).set(user);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        auth().signInWithEmailAndPassword(email, password);
+      } catch (error) {
+        alert(error);
+      }
     }
   }
 
@@ -121,12 +121,21 @@ export default function LogIn() {
             autoCompleteType='off'
             style={styles.textInput} />
           {isRegistering ?
-            <TextInput
-              placeholder='Full Name'
-              placeholderTextColor="#000"
-              value={fullName}
-              onChangeText={setFullName}
-              style={styles.textInput} />
+            <>
+              <TextInput
+                placeholder='Full Name'
+                placeholderTextColor="#000"
+                value={fullName}
+                onChangeText={setFullName}
+                style={styles.textInput} />
+              <TextInput
+                placeholder='Phone number'
+                placeholderTextColor="#000"
+                value={phone}
+                onChangeText={setPhone}
+                secureTextEntry={true}
+                style={styles.textInput} />
+            </>
             : null}
           <TextInput
             placeholder='Password'
@@ -150,7 +159,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#B4F8C8',
-    height: 40,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
@@ -167,20 +176,20 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     justifyContent: 'center',
-    height: height / 1.6
+    height: height / 1.6,
   },
   textInput: {
     borderWidth: 1,
     borderColor: '#000',
     height: 40,
     marginHorizontal: 20,
-    marginVertical: 10,
+    marginVertical: 5,
     borderRadius: 25,
-    paddingLeft: 30
+    paddingLeft: 30,
   },
   formButton: {
     backgroundColor: '#B4F8C8',
-    height: 40,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
@@ -198,7 +207,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   formContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
     justifyContent: 'center',
     // zIndex: -1
   },

@@ -1,92 +1,160 @@
-import { StyleSheet, Text, View } from 'react-native'
 import 'react-native-gesture-handler';
+import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import auth from '@react-native-firebase/auth';
 import LogIn from '../screens/LogIn'
-import Authenticated from '../screens/Authenticated';
-import Authentication from '../screens/Authentication';
+import Home from '../screens/Home';
+import Profile from '../screens/Profile';
 import Feather from 'react-native-vector-icons/Feather';
+import DetailsScreen from '../screens/DetailsScreen';
+import Favorite from '../screens/Favorite';
+
 const AppNavigation = () => {
 
-    const Stack = createNativeStackNavigator();
-    const Tab = createBottomTabNavigator();
-    const [authenticated, setAuthenticated] = useState(false);
-    auth().onAuthStateChanged((user) => {
-        if (user) {
-            setAuthenticated(true);
-        } else {
-            setAuthenticated(false);
-        }
-    });
+  const Stack = createNativeStackNavigator();
+  const Tab = createBottomTabNavigator();
+  const Drawer = createDrawerNavigator();
+  const [authenticated, setAuthenticated] = useState(false);
+  auth().onAuthStateChanged((user) => {
+    if (user) {
+      setAuthenticated(true);
+    } else {
+      setAuthenticated(false);
+    }
+  });
 
-    const BottomTabStack = () => {
-        return (
-          <Tab.Navigator
-            initialRouteName="HomeScreen"
-            tabBarOptions={{
-              activeTintColor: 'tomato',
-              inactiveTintColor: 'gray',
-              style: {
-                backgroundColor: '#e0e0e0',
-              },
-              labelStyle: {
-                textAlign: 'center',
-                fontSize: 12,
-              },
-            }}>
-            <Tab.Screen
-              name="Authenticated" component={Authenticated}
-              options={{
-                headerShown: false,
-                  tabBarLabel: 'Profile',
-                  tabBarLabelStyle: {color:'black'},
-                    tabBarIcon: ({ color }) => {
-                        return (
-                            <View style={{ width: 20, height: 20 }}>
-                                <Feather name="user" size={20} color={color} />
-                            </View>
-                    );
-                },
-              }}
-            />
-            <Tab.Screen
-              name="Authentication" 
-              component={Authentication}
-              options={{
-                headerShown: false,
-                  tabBarLabel: 'Products',
-                  tabBarLabelStyle: {color:'black'},
-                  tabBarIcon: ({ color }) => {
-                    return (
-                        <View style={{ width: 20, height: 20 }}>
-                            <Feather name="sliders" size={20} color={color} />
-                        </View>
-                );
-            },
-              }}
-            />
-            </Tab.Navigator>
-            )}
-
+  const BottomTabStack = () => {
     return (
-        <NavigationContainer>
-            <Stack.Navigator>
-                {!authenticated ?
-                <Stack.Screen name="Login" component={LogIn}
-                    options={{
-                        headerShown: false,
-                    }} /> :
-                    <Stack.Screen name="Tabnavigator" component={BottomTabStack}
-                    options={{
-                        headerShown: false,
-                    }} />
-                }
-            </Stack.Navigator>
-        </NavigationContainer>
+      <Tab.Navigator
+        initialRouteName="HomeScreen"
+        screenOptions={{
+          activeTintColor: 'tomato',
+          inactiveTintColor: 'gray',
+          style: {
+            backgroundColor: '#e0e0e0',
+          },
+          tabBarStyle: {
+            marginBottom: 10,
+            marginHorizontal: 25,
+            borderRadius: 10
+          },
+          labelStyle: {
+            textAlign: 'center',
+            fontSize: 12,
+          },
+        }}>
+        <Tab.Screen
+          name="Home" component={Home}
+          options={{
+            headerShown: false,
+            tabBarLabel: 'Home',
+            tabBarLabelStyle: { color: 'black' },
+            tabBarIcon: ({ color }) => {
+              return (
+                <View style={{ width: 20, height: 20 }}>
+                  <Feather name="home" size={20} color={color} />
+                </View>
+              );
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            headerShown: false,
+            tabBarLabel: 'Profile',
+            tabBarLabelStyle: { color: 'black' },
+            tabBarIcon: ({ color }) => {
+              return (
+                <View style={{ width: 20, height: 20 }}>
+                  <Feather name="user" size={20} color={color} />
+                </View>
+              );
+            },
+          }}
+        />
+        <Tab.Screen
+          name="screen2" component={Home}
+          options={{
+            headerShown: false,
+            tabBarLabel: 'Cart',
+            tabBarLabelStyle: { color: 'black' },
+            tabBarIcon: ({ color }) => {
+              return (
+                <View style={{ width: 20, height: 20 }}>
+                  <Feather name="shopping-cart" size={20} color={color} />
+                </View>
+              );
+            },
+          }}
+        />
+        <Tab.Screen
+          name="screen3" component={Home}
+          options={{
+            headerShown: false,
+            tabBarLabel: 'Download',
+            tabBarLabelStyle: { color: 'black' },
+            tabBarIcon: ({ color }) => {
+              return (
+                <View style={{ width: 20, height: 20 }}>
+                  <Feather name="download" size={20} color={color} />
+                </View>
+              );
+            },
+          }}
+        />
+      </Tab.Navigator>
     )
+  }
+
+  const DrawerNavigation = () => {
+    return (
+      <Drawer.Navigator initialRouteName="Tabnavigator" drawerContent={props => {
+        return (
+          <DrawerContentScrollView {...props}>
+            <DrawerItemList {...props} />
+            <DrawerItem label="Logout" onPress={() => auth().signOut()} />
+          </DrawerContentScrollView>
+        )
+      }}>
+        <Drawer.Screen name="BottomTabStack" component={BottomTabStack} options={{
+          headerShown: false,
+          drawerLabel: 'Home'
+        }} />
+        <Drawer.Screen name="Favorite" component={Favorite} options={{
+          headerShown: false,
+        }} />
+      </Drawer.Navigator>
+    );
+  }
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        {!authenticated ?
+          <Stack.Screen name="Login" component={LogIn}
+            options={{
+              headerShown: false,
+            }} /> :
+          <>
+            <Stack.Screen name="DrawerNav" component={DrawerNavigation}
+              options={{
+                headerShown: false,
+              }} />
+            <Stack.Screen name="DetailsScreen" component={DetailsScreen}
+              options={{
+                headerShown: false,
+              }} />
+          </>
+        }
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
 }
 
 export default AppNavigation;

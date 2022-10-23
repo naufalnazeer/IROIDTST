@@ -5,9 +5,9 @@ import axios from 'axios';
 const fetchUser = async () => {
 return new Promise((resolve, reject) => {
    axios
-   .get(`https://fakerapi.it/api/v1/addresses?_quantity=1`)
+   .get(`https://dummyjson.com/products`)
    .then((response) => {
-       resolve(response);
+       resolve(response.data);
    })
    .catch((error) => {
        reject(error);
