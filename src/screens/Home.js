@@ -1,75 +1,119 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserAction } from '../redux/actons';
 import { ScrollView } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
+import color from '../assets/theme/color';
+import axios from 'axios';
 
 const { height, width } = Dimensions.get('window')
-export default function Home({navigation}) {
+export default function Home({ navigation }) {
 
-  const user = useSelector((state) => state?.user);
-  const { usersData, loading, error } = user;
-  console.log(usersData)
-
-  const dispatch = useDispatch();
-
-  const { uid } = auth().currentUser;
-
-  const goToDetails = (data)=>{
-    navigation.navigate("DetailsScreen",{props:data})
+  const [dataBanner, setDataBanner] = useState()
+  const [loading, setLoading] = useState(true)
+  const [dataMeals, setDataMeals] = useState()
+  const goToDetails = (data) => {
+    navigation.navigate("DetailsScreen", { props: data })
   }
 
   const toggleDrawer = () => {
-    //Props to open/close the drawer
     navigation.toggleDrawer();
   };
 
-  // console.log(uid)
-  // const getUser = async () => {
-  //   try {
-  //     const documentSnapshot = await firestore()
-  //       .collection('users')
-  //       .doc(uid)
-  //       .get(); 
-  //     setUserData(documentSnapshot.data())
-  //   } catch(error) {
-  //     //do whatever
-  //     console.log(error);
-  //   }
-  //   console.log("userdata:",userData);
-  // };
+  const fetchUserAction = () => {
+    setLoading(true)
+    return new Promise((resolve, reject) => {
+      axios
+        .get(`http://proteinium.iroidtechnologies.in/api/v1/get-mealcategories`)
+        .then((response) => {
+          console.log("data", response.data.data.meal_categories)
+          setDataBanner(response.data.data.banners)
+          setDataMeals(response.data.data.meal_categories)
+          setLoading(false)
+        })
+        .catch((error) => {
+          reject(error);
+          setLoading(true)
+        });
+    });
+  }
   useEffect(() => {
-    dispatch(fetchUserAction())
+    fetchUserAction()
   }, [])
 
-  // const addData = async ()=>{
-  //   try{
-  //     const user = {
-  //       firstName: 'naufal',
-  //       lastName: 'nazeer',
-  //       user_id: uid,
-  //       products : {apple:{apple11:{name:"apple11",prize:"40000"},apple12:{name:"apple12",prize:"60000"}}}
-  //     };
-  //     await firestore().collection('users').doc(uid).update(user);
-  //   }catch(error){
-  //     console.log(error)
-  //   }
-  // }
   const ItemCard = () => {
     return (
-
       <View style={styles.mainContainer}>
-        {usersData && (usersData["products"]?.map((data, index) => {
-          const imageUrl = data.thumbnail;
+        {dataBanner && (dataBanner.map((data, index) => {
+          console.log(data.image)
+          const url = data.image
           return (
-            <View key={index} style={styles.cardView}>
-              <Text style={styles.title} onPress={()=>goToDetails(data)}>{data.title}</Text>
-              <Image source={{ uri: imageUrl }} style={styles.imageView} />
-              <Text style={styles.prizeText}>{data.price}$</Text>
-              <Text style={styles.descriptionText}>{data.description}</Text>
+            <View key={index}>
+              <Image source={require('../assets/images/Rectangle.png')} style={[styles.imageView, { marginTop: 19, }]} />
+              <View style={styles.circleContainer}>
+                <View style={[styles.circle, { backgroundColor: color.detailsText, }]}></View>
+                <View style={[styles.circle, { backgroundColor: 'green', }]}></View>
+                <View style={[styles.circle, { backgroundColor: color.detailsText, }]}></View>
+              </View>
+            </View>
+          )
+        }))}
+      </View>
+    )
+  }
+
+  const ListCard = () => {
+
+    return (
+      <View style={{ flex: 1 }}>
+        {dataMeals && (dataMeals.map((data, index) => {
+          console.log(data, "image")
+          return (
+            <View key={index} style={{ flex: 1 }}>
+              <Image
+                source={{ uri: data.image }}
+                style={[styles.imageView, { marginTop: 20, height: 130 }]}
+                resizeMode='cover'
+              />
+              <View
+                style={{
+                  backgroundColor: color.transparent,
+                  opacity: .81,
+                  position: 'absolute',
+                  width: width * .90,
+                  height: 30,
+                  bottom: 0,
+                  borderBottomLeftRadius: 20,
+                  borderBottomRightRadius: 20,
+                  alignSelf: 'center',
+                  justifyContent:'center'
+                }}>
+                <Text
+                  style={{
+                    color: color.primaryWhite,
+                    textAlignVertical:'center',
+                    marginLeft: 30,
+                    fontSize:12,
+                    fontWeight:'bold'
+                  }}
+                >
+                  Weight Loss
+                </Text>
+              </View>
+              <View style={{
+                backgroundColor: color.primaryWhite,
+                position: 'absolute',
+                width: 30,
+                height: 30,
+                bottom: -15,
+                right: 30,
+                borderRadius: 15,
+                alignSelf: 'center',
+                alignItems:'center',
+                justifyContent:'center'
+              }}>
+                 <Feather name='chevron-up' size={18} style={{color:color.primaryBlack}}/>
+              </View>
             </View>
           )
         }))}
@@ -85,12 +129,12 @@ export default function Home({navigation}) {
           bounces={false}
         >
           <View style={styles.menuBar}>
-            <TouchableOpacity onPress={()=> toggleDrawer()}>
-            <Feather name='menu' size={24} color="#A0E7E5" />
-            </TouchableOpacity>
-            <Feather name='settings' size={24} color="#A0E7E5" />
+            <Text style={styles.titleStyle}>IROID</Text>
+            <Image source={require('../assets/images/sub.png')} style={styles.image} />
           </View>
           {!loading ? <ItemCard /> : null}
+          <ListCard />
+          <View style={{marginBottom:100}}></View>
         </ScrollView>)
       }
     </View>
@@ -100,70 +144,45 @@ export default function Home({navigation}) {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-
-  },
-  text: {
-    fontSize: 25,
-  },
-  button: {
-    marginTop: 30,
-  },
-  mainContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    // backgroundColor:'red'
-  },
-  cardView: {
-    minHeight: width / 2,
-    width: (width / 2) - 40,
-    alignItems: 'center',
-    borderRadius: 15,
-    margin: 10,
-    backgroundColor: '#FFAEBC',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4
-    },
-    shadowOpacity: .25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   menuBar: {
-    padding: 10,
     flexDirection: 'row',
+    height: 84,
+    backgroundColor: color.buttonColor,
     justifyContent: 'space-between'
   },
+  titleStyle: {
+    flex: 1,
+    textAlign: 'center',
+    color: color.titleColor,
+    alignSelf: 'center',
+    fontSize: 34,
+    fontFamily:'Bungee-Regular'
+  },
+  image: {
+    marginRight: 24,
+    alignSelf: 'center',
+  },
   imageView: {
-    height: width * .25,
-    width: width * .25,
-    borderRadius: 10,
-    resizeMode: 'contain'
+    width: width * .90,
+    borderRadius: 20,
+    borderWidth: 1,
+    alignSelf: 'center',
+    overflow: 'hidden',
+    zIndex: -1
   },
-  title: {
-    color: "#000",
-    paddingVertical: 4,
-    fontSize: 16,
-    letterSpacing: .6,
-    textAlign: 'center',
-    textDecorationLine: 'underline'
+  circle: {
+    height: 8,
+    width: 8,
+    borderRadius: 4,
+    alignSelf: 'center',
+    marginTop: 8
   },
-  prizeText: {
-    color: "red",
-    letterSpacing: .1,
-    fontSize: 12,
-    textAlign: 'center',
-    marginTop:5
-  },
-  descriptionText: {
-    color: '#000',
-    fontSize: 10,
-    marginBottom: 3,
-    paddingHorizontal: 4,
-    textAlign:'center'
+  circleContainer: {
+    alignSelf: 'center',
+    width: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   }
 });

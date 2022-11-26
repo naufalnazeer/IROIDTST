@@ -2,6 +2,10 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "src/assets/fonts/Bungee-Regular.ttf",
+      "sha1": "5229858062d1cc9c3b96abf7a23c4fca2a78efd5"
+    },
+    {
       "path": "src/assets/fonts/Montserrat-Black.ttf",
       "sha1": "fca130f21601346cce37bb8a9526ff01af66d912"
     },
@@ -72,6 +76,10 @@
     {
       "path": "src/assets/fonts/Montserrat-ThinItalic.ttf",
       "sha1": "f7d887fc6b50157081fd60082d20339c433f9955"
+    },
+    {
+      "path": "src/assets/fonts/ShurikenStd-Boy.otf",
+      "sha1": "2ff88e4e14e1eba77b396606815e0ed33c9999e0"
     }
   ]
 }

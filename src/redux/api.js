@@ -5,9 +5,9 @@ import axios from 'axios';
 const fetchUser = async () => {
 return new Promise((resolve, reject) => {
    axios
-   .get(`https://dummyjson.com/products`)
+   .get(`http://proteinium.iroidtechnologies.in/api/v1/get-mealcategories`)
    .then((response) => {
-       resolve(response.data);
+       resolve(response);
    })
    .catch((error) => {
        reject(error);

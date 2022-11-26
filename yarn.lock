@@ -6148,6 +6148,10 @@
     "react-freeze" "^1.0.0"
     "warn-once" "^0.1.0"
 
+"react-native-splash-screen@file:../../../../../../opt/homebrew/lib/node_modules/react-native-splash-screen":
+  "resolved" "file:../../../../../../opt/homebrew/lib/node_modules/react-native-splash-screen"
+  "version" "3.3.0"
+
 "react-native-svg@^13.4.0":
   "integrity" "sha512-B3TwK+H0+JuRhYPzF21AgqMt4fjhCwDZ9QUtwNstT5XcslJBXC0FoTkdZo8IEb1Sv4suSqhZwlAY6lwOv3tHag=="
   "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.4.0.tgz"

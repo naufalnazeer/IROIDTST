@@ -1,4 +1,4 @@
-import { Dimensions, Image, StyleSheet, Text, View, FlatList, TouchableOpacity  } from 'react-native'
+import { Dimensions, Image, StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 const { height, width } = Dimensions.get('window')
 import Feather from 'react-native-vector-icons/Feather';
@@ -13,21 +13,26 @@ const DetailsScreen = ({ navigation, route }) => {
     const SPACING = 10;
     const topRef = React.useRef();
     const bottomRef = React.useRef();
-    const setActiveIndex  =(index)=>{
+    const goToCart = () => {
+        navigation.navigate("AddToCart")
+    }
+
+    const setActiveIndex = (index) => {
         setOnIndex(index);
         topRef?.current?.scrollToOffset({
             offset: index * width,
-            animated : true
+            animated: true
         })
-        if(index*(IMAGE_SIZE+SPACING)-IMAGE_SIZE/2 > width/2) {
+        if (index * (IMAGE_SIZE + SPACING) - IMAGE_SIZE / 2 > width / 2) {
             bottomRef?.current?.scrollToOffset({
-                offset: index*(IMAGE_SIZE+SPACING)-width/2 + IMAGE_SIZE/2 ,
-                animated : true
+                offset: index * (IMAGE_SIZE + SPACING) - width / 2 + IMAGE_SIZE / 2,
+                animated: true
             })
-        }else{
+        } else {
             bottomRef?.current?.scrollToOffset({
                 offset: 0,
-                animated : true})
+                animated: true
+            })
         }
     }
 
@@ -49,8 +54,8 @@ const DetailsScreen = ({ navigation, route }) => {
                     showsHorizontalScrollIndicator={false}
                     data={imageData}
                     horizontal
-                    onMomentumScrollEnd={ev=>{
-                        setActiveIndex(Math.round(ev.nativeEvent.contentOffset.x/width))
+                    onMomentumScrollEnd={ev => {
+                        setActiveIndex(Math.round(ev.nativeEvent.contentOffset.x / width))
                     }}
                     keyExtractor={(_, index) => { index.toString() }}
                     renderItem={RenderImage}
@@ -62,7 +67,7 @@ const DetailsScreen = ({ navigation, route }) => {
             <Text style={[styles.descriptionText, { color: '#FF75D8', }]}>Stock: {data.stock}</Text>
             <Text style={[styles.descriptionText, { color: '#000', }]}>{data.description}</Text>
             <View style={styles.cartStyle}>
-                <Text style={[styles.descriptionText, { color: 'blue', }]}>Add to cart</Text>
+                <Text style={[styles.descriptionText, { color: 'blue', }]} onPress={() => goToCart()}>Add to cart</Text>
                 <Feather name="shopping-cart" size={20} color="blue" />
             </View>
             {/* <RenderImage /> */}
@@ -78,10 +83,10 @@ const DetailsScreen = ({ navigation, route }) => {
                 renderItem={({ item, index }) => {
                     console.log(item, index)
                     return (
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             key={index}
-                            onPress={()=>setActiveIndex(index)}
-                            >
+                            onPress={() => setActiveIndex(index)}
+                        >
                             <Image
                                 source={{ uri: item }}
                                 style={{
@@ -89,8 +94,8 @@ const DetailsScreen = ({ navigation, route }) => {
                                     height: IMAGE_SIZE,
                                     borderRadius: 12,
                                     marginRight: SPACING,
-                                    borderWidth:2,
-                                    borderColor: onIndex === index ? "red" :'transparent'
+                                    borderWidth: 2,
+                                    borderColor: onIndex === index ? "red" : 'transparent'
                                 }}
                             />
                         </TouchableOpacity>

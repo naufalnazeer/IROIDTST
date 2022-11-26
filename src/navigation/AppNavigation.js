@@ -12,20 +12,13 @@ import Profile from '../screens/Profile';
 import Feather from 'react-native-vector-icons/Feather';
 import DetailsScreen from '../screens/DetailsScreen';
 import Favorite from '../screens/Favorite';
+import AddToCart from '../screens/AddToCart'
 
 const AppNavigation = () => {
 
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
   const Drawer = createDrawerNavigator();
-  const [authenticated, setAuthenticated] = useState(false);
-  auth().onAuthStateChanged((user) => {
-    if (user) {
-      setAuthenticated(true);
-    } else {
-      setAuthenticated(false);
-    }
-  });
 
   const BottomTabStack = () => {
     return (
@@ -136,12 +129,10 @@ const AppNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {!authenticated ?
           <Stack.Screen name="Login" component={LogIn}
             options={{
               headerShown: false,
-            }} /> :
-          <>
+            }} /> 
             <Stack.Screen name="DrawerNav" component={DrawerNavigation}
               options={{
                 headerShown: false,
@@ -150,8 +141,10 @@ const AppNavigation = () => {
               options={{
                 headerShown: false,
               }} />
-          </>
-        }
+              <Stack.Screen name="AddToCart" component={AddToCart}
+              options={{
+                headerShown: false,
+              }} />
       </Stack.Navigator>
     </NavigationContainer>
   )

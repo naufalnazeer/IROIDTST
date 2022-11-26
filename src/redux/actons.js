@@ -12,7 +12,7 @@ export const fetchUserAction = () => (dispatch) => {
           type: UserConstants.FETCH_USER_SUCCESS,
           payload: response,
         });
-        resolve(response.data);
+        resolve(response);
       })
       .catch((err) => {
         dispatch({
